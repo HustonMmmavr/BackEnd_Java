@@ -3,7 +3,6 @@ package lastunion.application.Managers;
 import lastunion.application.DAO.UserDAO;
 import lastunion.application.Models.SignInModel;
 import lastunion.application.Models.SignUpModel;
-
 import lastunion.application.Models.UserModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
@@ -17,8 +16,7 @@ import javax.validation.constraints.NotNull;
 
 @Service
 public class UserManager {
-    @NotNull
-    private UserDAO userDAO;
+    @NotNull private UserDAO userDAO;
 
     public enum ResponseCode {
         OK,
@@ -38,16 +36,30 @@ public class UserManager {
         return new BCryptPasswordEncoder();
     }
 
-    public String makePasswordHash(final String password) {
+    private String makePasswordHash(@NotNull final String password) {
         return passwordEncoder().encode(password);
     }
 
-    public boolean checkPassword(final String password, final String passwordHash){
+    private boolean checkPassword(@NotNull final String password, @NotNull final String passwordHash){
         return passwordEncoder().matches(password, passwordHash);
+    }
+
+    public boolean checkPasswordByUserName(@NotNull String password, @NotNull String userLogin)
+    {
+        try {
+            UserModel savedUser = userDAO.getUserByName(userLogin);
+
+            if (checkPassword(savedUser.getUserPasswordHash(), password))
+                return true;
+        }
+        catch(DataAccessException ex){
+            return false;
+        }
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 
-    public ResponseCode signInUser(@NotNull SignInModel signInUserData) {
+    public ResponseCode signInUser(@NotNull final SignInModel signInUserData) {
 
         // Check sigInModel for empty fields
         if (signInUserData.isFilledData())
@@ -72,7 +84,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode signUpUser(SignUpModel signUpUserData) {
+    public ResponseCode signUpUser(@NotNull final SignUpModel signUpUserData) {
 
         // Check signUpModel for empty fields
         if (!signUpUserData.isFilledData())  {
@@ -99,24 +111,95 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode changeUserEmail(UserModel user, String newEmail){
+    public ResponseCode changeUserEmail(final String newEmail, @NotNull final String userName){
+        // trying to get storaged user and copy its data to new
+        // user, than in new user modify email and save it
+        try {
+            final UserModel user = userDAO.getUserByName(userName);
+            final UserModel modifiedUser = new UserModel(user);
+            modifiedUser.setUserEmail(newEmail);
+            userDAO.modifyUser(user, modifiedUser);
+        }
+        // No user found
+        catch (EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_SESSION;
 
+        }
+        // error db
+        catch (DataAccessException ex) {
+            return ResponseCode.DATABASE_ERROR;
+        }
         return ResponseCode.OK;
     }
 
-    public ResponseCode changeUserName(){
+    public ResponseCode changeUserPassword(final String newPassword, @NotNull final String userName){
+        // trying to get storaged user and copy its data to new
+        // user, than in new user modify email and save it
+        try {
+            final UserModel user = userDAO.getUserByName(userName);
+            final UserModel modifiedUser = new UserModel(user);
+            modifiedUser.setUserPasswordHash(makePasswordHash(newPassword));
+            userDAO.modifyUser(user, modifiedUser);
+        }
+        // No user found
+        catch (EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_SESSION;
+
+        }
+        // error db
+        catch (DataAccessException ex) {
+            return ResponseCode.DATABASE_ERROR;
+        }
         return ResponseCode.OK;
     }
 
-    public ResponseCode signUpUser(){
+    public ResponseCode getUserByName(final String userName, UserModel user){
+        // trying to get storaged user
+        try {
+            user = userDAO.getUserByName(userName);
+        }
+        // No user found
+        catch (EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_SESSION;
+
+        }
+        // error db
+        catch (DataAccessException ex) {
+            return ResponseCode.DATABASE_ERROR;
+        }
         return ResponseCode.OK;
     }
 
-    public ResponseCode getUserByName(String userName, UserModel user){
+    public ResponseCode deleteUserByName(final String userName){
+        // trying to get storaged user
+        try {
+            userDAO.deleteUserByName(userName);
+        }
+        // No user found
+        catch (EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_SESSION;
+        }
+        // error db
+        catch (DataAccessException ex) {
+            return ResponseCode.DATABASE_ERROR;
+        }
         return ResponseCode.OK;
     }
 
-    public ResponseCode getUserById(Integer userId, UserModel user){
+    public ResponseCode getUserById(final Integer userId, UserModel user){
+        // trying to get storaged user
+        try {
+            user = userDAO.getUserById(userId);
+        }
+        // No user found
+        catch (EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_SESSION;
+
+        }
+        // error db
+        catch (DataAccessException ex) {
+            return ResponseCode.DATABASE_ERROR;
+        }
         return ResponseCode.OK;
     }
 }

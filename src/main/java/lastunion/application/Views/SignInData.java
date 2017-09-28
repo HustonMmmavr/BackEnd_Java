@@ -8,8 +8,8 @@ public final class SignInData {
     private final String userPassword;
 
     @JsonCreator
-    SignInData(@JsonProperty("name") String userName,
-               @JsonProperty("pass") String userPassword){
+    SignInData(@JsonProperty("userName") String userName,
+               @JsonProperty("userPassword") String userPassword){
         this.userName = userName;
         this.userPassword = userPassword;
     }

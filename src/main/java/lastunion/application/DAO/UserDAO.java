@@ -9,12 +9,12 @@ public class UserDAO {
     private static final String dbName = "";
     private static final String tableName = "";
 
-    public UserModel getUserById(Integer id)  {
+    public UserModel getUserById(final Integer id)  {
         //UserModel user = new UserModel();
         return null;
     }
 
-    public UserModel getUserByName(String name)  {
+    public UserModel getUserByName(final String name)  {
         //UserModel user = new UserModel();
         return null;
     }
@@ -28,7 +28,7 @@ public class UserDAO {
         String query = "INSERT INTO ";
     }
 
-    public void deleteUser(UserModel user){
+    public void deleteUserByName(final String userName){
 
     }
 

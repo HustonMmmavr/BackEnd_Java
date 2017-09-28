@@ -37,20 +37,11 @@ public class SignUpController {
         final SignUpModel signUpUser = new SignUpModel(body.getUserName(), body.getUserPassword(), body.getUserEmail());
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpUser);
 
-        //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
-
             case INCORRECT_AUTH_DATA: {
                 return new ResponseEntity<>(new ResponseCode(false,
                         messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
                         HttpStatus.BAD_REQUEST);
-            }
-
-            case INCORRECT_LOGIN:
-            case INCORRECT_PASSWORD: {
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
-                        HttpStatus.FORBIDDEN);
             }
 
             case OK: {

@@ -35,7 +35,6 @@ public class SignInController {
         final SignInModel signinUser = new SignInModel(body.getUserName(), body.getUserPassword());
         final UserManager.ResponseCode responseCode = userManager.signInUser(signinUser);
 
-        //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
 
             case INCORRECT_AUTH_DATA: {

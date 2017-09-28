@@ -20,8 +20,5 @@ public class SignInModel {
     public String getUserPassword(){
         return userPassword;
     }
-
-    public boolean isFilledData() {
-        return userName != null && userPassword != null;
-    }
+    public boolean isFilledData() { return userName != null && userPassword != null; }
 }

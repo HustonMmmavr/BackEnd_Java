@@ -7,6 +7,8 @@ public final class UserModel {
     private String userPasswordHash;
     private Integer userHighScore;
 
+    public UserModel(){}
+
     public UserModel(Integer userId, String userName, String userEmail,
                      String userPasswordHash, Integer userHighScore){
         setUserId(userId);
@@ -15,6 +17,15 @@ public final class UserModel {
         setUserPasswordHash(userPasswordHash);
         setUserHighScore(userHighScore);
     }
+
+    public UserModel(UserModel other){
+        setUserId(other.userId);
+        setUserName(other.userName);
+        setUserEmail(other.userEmail);
+        setUserPasswordHash(other.userPasswordHash);
+        setUserHighScore(other.userHighScore);
+    }
+
 
     public UserModel(Integer userId, String userName, String userEmail,
                      String userPasswordHash){

@@ -9,8 +9,8 @@ public class SignUpData {
     private final String userEmail;
 
     @JsonCreator
-    SignUpData(@JsonProperty("name") String userName, @JsonProperty("pass") String userPassword,
-               @JsonProperty("email") String userEmail){
+    SignUpData(@JsonProperty("userName") String userName, @JsonProperty("userPassword") String userPassword,
+               @JsonProperty("userEmail") String userEmail){
         this.userName = userName;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
