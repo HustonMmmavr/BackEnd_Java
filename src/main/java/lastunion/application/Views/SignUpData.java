@@ -16,14 +16,10 @@ public class SignUpData {
         this.userEmail = userEmail;
     }
 
-
     public final String getUserName(){
         return userName;
     }
-
-    public final String getUserPassword(){
-        return userPassword;
-    }
-
+    public final String getUserPassword(){ return userPassword; }
     public final String getUserEmail() {return userEmail; }
+
 }

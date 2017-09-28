@@ -10,13 +10,13 @@ public class UserDAO {
     private static final String tableName = "";
 
     public UserModel getUserById(Integer id)  {
-        UserModel user = new UserModel();
-        return user;
+        //UserModel user = new UserModel();
+        return null;
     }
 
     public UserModel getUserByName(String name)  {
-        UserModel user = new UserModel();
-        return user;
+        //UserModel user = new UserModel();
+        return null;
     }
 
     public void modifyUser(UserModel user, UserModel changedUser) {
@@ -37,9 +37,5 @@ public class UserDAO {
     private void executeQuery(String query)  {
 
     }
-
-
-
-
 
 }

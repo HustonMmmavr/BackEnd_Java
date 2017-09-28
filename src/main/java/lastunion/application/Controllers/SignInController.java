@@ -1,16 +1,14 @@
 package lastunion.application.Controllers;
 
+import lastunion.application.Managers.UserManager;
+import lastunion.application.Models.SignInModel;
+import lastunion.application.Views.ResponseCode;
+import lastunion.application.Views.SignInData;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import lastunion.application.Managers.UserManager;
-import lastunion.application.Models.UserModel;
-import lastunion.application.Views.ResponseCode;
-import lastunion.application.Views.SignInData;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -30,12 +28,12 @@ public class SignInController {
     }
 
     @RequestMapping(path="/api/user/signin", method = RequestMethod.POST,
-                    produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
                     )
-    public RequestEntity<ResponseCode> getMessage(@RequestBody SignInData body, HttpSession httpSession) {
+    public ResponseEntity<ResponseCode> getMessage(@RequestBody SignInData body, HttpSession httpSession) {
         @SuppressWarnings("LocalVariableNamingConvention")
-        final UserModel user = new UserModel(body.getUserName(), body.getUserPassword());
-        final UserManager.ResponseCode responseCode = userManager.signinUser(user);
+        final SignInModel signinUser = new SignInModel(body.getUserName(), body.getUserPassword());
+        final UserManager.ResponseCode responseCode = userManager.signInUser(signinUser);
 
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
@@ -54,7 +52,7 @@ public class SignInController {
             }
 
             case OK: {
-                httpSession.setAttribute("userLogin", body.getUserLogin());
+                httpSession.setAttribute("userLogin", body.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                         HttpStatus.OK);

@@ -17,8 +17,5 @@ public final class SignInData {
     public final String getUserName(){
         return userName;
     }
-
-    public final String getUserPassword(){
-        return userPassword;
-    }
+    public final String getUserPassword(){ return userPassword;}
 }

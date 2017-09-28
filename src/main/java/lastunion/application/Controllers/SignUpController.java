@@ -1,13 +1,12 @@
 package lastunion.application.Controllers;
 
 import lastunion.application.Managers.UserManager;
-import lastunion.application.Models.UserModel;
+import lastunion.application.Models.SignUpModel;
 import lastunion.application.Views.ResponseCode;
 import lastunion.application.Views.SignUpData;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,10 +32,10 @@ public class SignUpController {
 
     @RequestMapping(path="/api/user/signup", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RequestEntity<ResponseCode> getMessage(@RequestBody SignUpData body, HttpSession httpSession) {
+    public ResponseEntity<ResponseCode> getMessage(@RequestBody SignUpData body, HttpSession httpSession) {
         @SuppressWarnings("LocalVariableNamingConvention")
-        final UserModel user = new UserModel(body.getUserName(), body.getUserPassword());
-        final UserManager.ResponseCode responseCode = userManager.signupUser(user);
+        final SignUpModel signUpUser = new SignUpModel(body.getUserName(), body.getUserPassword(), body.getUserEmail());
+        final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpUser);
 
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
@@ -55,7 +54,7 @@ public class SignUpController {
             }
 
             case OK: {
-                httpSession.setAttribute("userLogin", body.getUserLogin());
+                httpSession.setAttribute("userLogin", body.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                         HttpStatus.OK);

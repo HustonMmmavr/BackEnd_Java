@@ -1,10 +1,16 @@
 package lastunion.application.Managers;
 
 import lastunion.application.DAO.UserDAO;
+import lastunion.application.Models.SignInModel;
+import lastunion.application.Models.SignUpModel;
+
 import lastunion.application.Models.UserModel;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -21,17 +27,17 @@ public class UserManager {
         INCORRECT_PASSWORD,
         INCORRECT_SESSION,
         INCORRECT_AUTH_DATA,
-        INCORREXT_REG_DATA,
+        INCORRECT_REG_DATA,
         DATABASE_ERROR
     };
 
+    // Work with password
+    ////////////////////////////////////////////////////////////////////////
     @Bean
     private PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
-    // Public method to create hash password
     public String makePasswordHash(final String password) {
         return passwordEncoder().encode(password);
     }
@@ -39,27 +45,57 @@ public class UserManager {
     public boolean checkPassword(final String password, final String passwordHash){
         return passwordEncoder().matches(password, passwordHash);
     }
+    //////////////////////////////////////////////////////////////////////////
 
-    public ResponseCode signinUser(UserModel user) {
+    public ResponseCode signInUser(@NotNull SignInModel signInUserData) {
+
+        // Check sigInModel for empty fields
+        if (signInUserData.isFilledData())
+            return ResponseCode.INCORRECT_AUTH_DATA;
+
+        // Check user storaged in database
         try {
-            userDAO.getUserByName(user.getName());
-        }
-        catch(Exception e) //TODO
-        {
+            UserModel savedUser = userDAO.getUserByName(signInUserData.getUserName());
 
+            // wrong password
+            if (!checkPassword(savedUser.getUserPasswordHash(), signInUserData.getUserPassword()))
+                return ResponseCode.INCORRECT_PASSWORD;
+        }
+        // no user, storaged in database
+        catch(EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_LOGIN;
+        }
+        // error in work with db
+        catch(DataAccessException ex){
+            return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
     }
 
-    public ResponseCode signupUser(UserModel user) {
+    public ResponseCode signUpUser(SignUpModel signUpUserData) {
+
+        // Check signUpModel for empty fields
+        if (!signUpUserData.isFilledData())  {
+            return ResponseCode.INCORRECT_REG_DATA;
+        }
+
+        // Creating UserModel to stoarage
+        UserModel newUser = new UserModel(signUpUserData);
+        newUser.setUserPasswordHash(makePasswordHash(signUpUserData.getUserPassword()));
+
+        // trying to save user
         try {
-            userDAO.getUserByName(user.getName());
-
+            userDAO.saveUser(newUser);
         }
-        catch(Exception e) //TODO
-        {
-
+        // user with this login exist
+        catch(DuplicateKeyException dupEx) {
+            return ResponseCode.LOGIN_IS_BUSY;
         }
+        // error in work with db
+        catch(DataAccessException daEx) {
+            return ResponseCode.DATABASE_ERROR;
+        }
+
         return ResponseCode.OK;
     }
 
