@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PasswordView {
-    private String oldPassword;
-    private String newPassword;
+    private final String oldPassword;
+    private final String newPassword;
 
     @JsonCreator
     public PasswordView(@JsonProperty("oldPassword") String oldPassword,

@@ -32,11 +32,10 @@ public class SignInController {
                     )
     public ResponseEntity<ResponseCode> getMessage(@RequestBody SignInData body, HttpSession httpSession) {
         @SuppressWarnings("LocalVariableNamingConvention")
-        final SignInModel signinUser = new SignInModel(body.getUserName(), body.getUserPassword());
-        final UserManager.ResponseCode responseCode = userManager.signInUser(signinUser);
+        final SignInModel signInUser = new SignInModel(body.getUserName(), body.getUserPassword());
+        final UserManager.ResponseCode responseCode = userManager.signInUser(signInUser);
 
         switch (responseCode) {
-
             case INCORRECT_AUTH_DATA: {
                 return new ResponseEntity<>(new ResponseCode(false,
                         messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),

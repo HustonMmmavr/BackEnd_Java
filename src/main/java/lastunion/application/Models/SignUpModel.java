@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SignUpModel {
-    private String userName;
-    private String userPassword;
-    private String userEmail;
+    private final String userName;
+    private final String userPassword;
+    private final String userEmail;
 
     @JsonCreator
     public SignUpModel(@JsonProperty("userName") String userName,

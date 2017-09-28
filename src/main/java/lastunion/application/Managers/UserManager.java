@@ -36,15 +36,15 @@ public class UserManager {
         return new BCryptPasswordEncoder();
     }
 
-    private String makePasswordHash(@NotNull final String password) {
+    private final String  makePasswordHash(@NotNull final String password) {
         return passwordEncoder().encode(password);
     }
 
-    private boolean checkPassword(@NotNull final String password, @NotNull final String passwordHash){
+    private final boolean checkPassword(@NotNull final String password, @NotNull final String passwordHash){
         return passwordEncoder().matches(password, passwordHash);
     }
 
-    public boolean checkPasswordByUserName(@NotNull String password, @NotNull String userLogin)
+    public boolean checkPasswordByUserName(@NotNull final String password, @NotNull final String userLogin)
     {
         try {
             UserModel savedUser = userDAO.getUserByName(userLogin);
@@ -111,7 +111,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode changeUserEmail(final String newEmail, @NotNull final String userName){
+    public ResponseCode changeUserEmail(@NotNull final String newEmail, @NotNull final String userName){
         // trying to get storaged user and copy its data to new
         // user, than in new user modify email and save it
         try {
@@ -132,7 +132,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode changeUserPassword(final String newPassword, @NotNull final String userName){
+    public ResponseCode changeUserPassword(@NotNull final String newPassword, @NotNull final String userName){
         // trying to get storaged user and copy its data to new
         // user, than in new user modify email and save it
         try {
@@ -153,7 +153,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode getUserByName(final String userName, UserModel user){
+    public ResponseCode getUserByName(@NotNull final String userName, UserModel user){
         // trying to get storaged user
         try {
             user = userDAO.getUserByName(userName);
@@ -170,7 +170,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode deleteUserByName(final String userName){
+    public ResponseCode deleteUserByName(@NotNull final String userName){
         // trying to get storaged user
         try {
             userDAO.deleteUserByName(userName);
@@ -186,7 +186,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode getUserById(final Integer userId, UserModel user){
+    public ResponseCode getUserById(@NotNull final Integer userId, UserModel user){
         // trying to get storaged user
         try {
             user = userDAO.getUserById(userId);

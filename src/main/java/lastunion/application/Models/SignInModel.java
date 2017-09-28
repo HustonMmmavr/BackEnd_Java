@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SignInModel {
 
-    private String userName;
-    private String userPassword;
+    private final String userName;
+    private final String userPassword;
 
     @JsonCreator
     public SignInModel(@JsonProperty("userName") String name, @JsonProperty("userPassword") String password){
