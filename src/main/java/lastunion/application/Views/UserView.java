@@ -4,7 +4,7 @@ import lastunion.application.Models.UserModel;
 
 import javax.validation.constraints.NotNull;
 
-public class UserView {
+public class UserView implements AbstractView {
     private Integer userId;
     private String userLogin;
     private String userEmail;
@@ -18,6 +18,8 @@ public class UserView {
         setUserEmail(userModel.getUserEmail());
         setUserHighScore(userModel.getUserHighScore());
     }
+
+
 
     public Integer getUserId(){
         return userId;
@@ -43,5 +45,13 @@ public class UserView {
     }
     public void setUserHighScore(Integer userHighScore){
         this.userHighScore = userHighScore;
+    }
+
+    public final boolean isFilled(){
+        return userId != null && userLogin != null && userEmail != null && userHighScore != null;
+    }
+
+    public final boolean isValid(){
+        return isFilled();
     }
 }

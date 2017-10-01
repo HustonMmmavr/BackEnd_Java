@@ -3,7 +3,7 @@ package lastunion.application.Views;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PasswordView {
+public class PasswordView implements AbstractView {
     private final String oldPassword;
     private final String newPassword;
 
@@ -24,5 +24,10 @@ public class PasswordView {
 
     public boolean isFilled(){
         return newPassword != null && oldPassword != null;
+    }
+    public boolean isValid() {
+        if (!isFilled()) return false;
+        return true;
+        //TODO check data for valid
     }
 }

@@ -3,7 +3,7 @@ package lastunion.application.Controllers;
 import lastunion.application.Managers.UserManager;
 import lastunion.application.Models.SignInModel;
 import lastunion.application.Views.ResponseCode;
-import lastunion.application.Views.SignInData;
+import lastunion.application.Views.SignInView;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,17 +30,18 @@ public class SignInController {
     @RequestMapping(path="/api/user/signin", method = RequestMethod.POST,
                     produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
                     )
-    public ResponseEntity<ResponseCode> getMessage(@RequestBody SignInData body, HttpSession httpSession) {
-        @SuppressWarnings("LocalVariableNamingConvention")
-        final SignInModel signInUser = new SignInModel(body.getUserName(), body.getUserPassword());
-        final UserManager.ResponseCode responseCode = userManager.signInUser(signInUser);
+    public ResponseEntity<ResponseCode> getMessage(@RequestBody SignInView signInView, HttpSession httpSession) {
 
+        // Incorrect authenticatiion data
+        if (!signInView.isValid()){
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
+        }
+        final SignInModel signInUser = new SignInModel(signInView.getUserName(), signInView.getUserPassword());
+
+        final UserManager.ResponseCode responseCode = userManager.signInUser(signInUser);
         switch (responseCode) {
-            case INCORRECT_AUTH_DATA: {
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
-                        HttpStatus.BAD_REQUEST);
-            }
 
             case INCORRECT_LOGIN:
             case INCORRECT_PASSWORD: {
@@ -50,7 +51,7 @@ public class SignInController {
             }
 
             case OK: {
-                httpSession.setAttribute("userLogin", body.getUserName());
+                httpSession.setAttribute("userLogin", signInView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                         HttpStatus.OK);

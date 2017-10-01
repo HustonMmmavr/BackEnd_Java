@@ -36,7 +36,6 @@ public class UserController {
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode<UserView>> getUserData(HttpSession httpSession){
         final String userLogin = (String)httpSession.getAttribute("userLogin");
-
         if (userLogin == null){
             return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
@@ -54,7 +53,7 @@ public class UserController {
                         HttpStatus.NOT_FOUND);
             }
             case OK:{
-                // filling info about us
+                // filling info about user
                 userView.setUserId(userModel.getUserId());
                 userView.setUserLogin(userModel.getUserName());
                 userView.setUserEmail(userModel.getUserEmail());
@@ -102,8 +101,8 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
-        // check for empy email view
-        if (!emailView.isFilled()) {
+        // check form for valid
+        if (!emailView.isValid()) {
             return new ResponseEntity<ResponseCode>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
                     HttpStatus.BAD_REQUEST);
@@ -143,7 +142,9 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
-        if (!passwordView.isFilled()) {
+
+
+        if (!passwordView.isValid()) {
             return new ResponseEntity<ResponseCode>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
                     HttpStatus.BAD_REQUEST);

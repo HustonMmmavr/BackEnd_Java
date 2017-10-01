@@ -4,10 +4,12 @@ import lastunion.application.DAO.UserDAO;
 import lastunion.application.Models.SignInModel;
 import lastunion.application.Models.SignUpModel;
 import lastunion.application.Models.UserModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,13 @@ public class UserManager {
         INCORRECT_LOGIN,
         INCORRECT_PASSWORD,
         INCORRECT_SESSION,
-        INCORRECT_AUTH_DATA,
-        INCORRECT_REG_DATA,
         DATABASE_ERROR
     };
+
+    @Autowired
+    public UserManager(final JdbcTemplate jdbcTemplate){
+        userDAO = new UserDAO(jdbcTemplate);
+    }
 
     // Work with password
     ////////////////////////////////////////////////////////////////////////
@@ -62,8 +67,8 @@ public class UserManager {
     public ResponseCode signInUser(@NotNull final SignInModel signInUserData) {
 
         // Check sigInModel for empty fields
-        if (signInUserData.isFilledData())
-            return ResponseCode.INCORRECT_AUTH_DATA;
+        //if (signInUserData.isFilledData())
+        //    return ResponseCode.INCORRECT_AUTH_DATA;
 
         // Check user storaged in database
         try {
@@ -77,7 +82,7 @@ public class UserManager {
         catch(EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         }
-        // error in work with db
+//        // error in work with db
         catch(DataAccessException ex){
             return ResponseCode.DATABASE_ERROR;
         }
@@ -87,9 +92,9 @@ public class UserManager {
     public ResponseCode signUpUser(@NotNull final SignUpModel signUpUserData) {
 
         // Check signUpModel for empty fields
-        if (!signUpUserData.isFilledData())  {
-            return ResponseCode.INCORRECT_REG_DATA;
-        }
+        //if (!signUpUserData.isFilledData())  {
+        //    return ResponseCode.INCORRECT_REG_DATA;
+        //}
 
         // Creating UserModel to stoarage
         UserModel newUser = new UserModel(signUpUserData);
@@ -103,7 +108,7 @@ public class UserManager {
         catch(DuplicateKeyException dupEx) {
             return ResponseCode.LOGIN_IS_BUSY;
         }
-        // error in work with db
+//        // error in work with db
         catch(DataAccessException daEx) {
             return ResponseCode.DATABASE_ERROR;
         }
@@ -123,7 +128,6 @@ public class UserManager {
         // No user found
         catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_SESSION;
-
         }
         // error db
         catch (DataAccessException ex) {
@@ -144,7 +148,6 @@ public class UserManager {
         // No user found
         catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_SESSION;
-
         }
         // error db
         catch (DataAccessException ex) {
@@ -161,7 +164,6 @@ public class UserManager {
         // No user found
         catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_SESSION;
-
         }
         // error db
         catch (DataAccessException ex) {
@@ -191,10 +193,10 @@ public class UserManager {
         try {
             user = userDAO.getUserById(userId);
         }
-        // No user found
+//        catch(Excep
+//        // No user found
         catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_SESSION;
-
         }
         // error db
         catch (DataAccessException ex) {

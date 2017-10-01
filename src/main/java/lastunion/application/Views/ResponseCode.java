@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 //import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("DefaultTemplateFile")
 public final class ResponseCode<T> {
     private final boolean result;
     private final String errorMessage;
     private final T data;
 
     @JsonCreator
-    public ResponseCode(@SuppressWarnings("SameParameterValue") @JsonProperty("result") boolean result,
+    public ResponseCode(@JsonProperty("result") boolean result,
                         @JsonProperty("errorMsg") String errorMessage,
                         @JsonProperty("data") T data) {
         this.result = result;
@@ -27,13 +26,10 @@ public final class ResponseCode<T> {
         this.data = null;
     }
 
-    @SuppressWarnings("unused")
     public boolean getResult() { return result; }
 
-    @SuppressWarnings("unused")
     public String getErrorMessage() { return errorMessage;  }
 
     //@Nullable
-    @SuppressWarnings("unused")
     public T getData() { return data;   }
 }

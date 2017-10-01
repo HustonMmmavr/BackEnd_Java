@@ -22,8 +22,4 @@ public class SignUpModel {
     }
     public String getUserPassword(){return userPassword;}
     public String getUserEmail() {return userEmail;}
-
-    public boolean isFilledData() {
-        return userName != null && userPassword != null && userEmail != null;
-    }
 }

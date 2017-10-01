@@ -3,7 +3,7 @@ package lastunion.application.Controllers;
 import lastunion.application.Managers.UserManager;
 import lastunion.application.Models.SignUpModel;
 import lastunion.application.Views.ResponseCode;
-import lastunion.application.Views.SignUpData;
+import lastunion.application.Views.SignUpView;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,24 +32,33 @@ public class SignUpController {
 
     @RequestMapping(path="/api/user/signup", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCode> getMessage(@RequestBody SignUpData body, HttpSession httpSession) {
-        @SuppressWarnings("LocalVariableNamingConvention")
-        final SignUpModel signUpUser = new SignUpModel(body.getUserName(), body.getUserPassword(), body.getUserEmail());
+    public ResponseEntity<ResponseCode> getMessage(@RequestBody SignUpView signUpView, HttpSession httpSession) {
+
+        // Incorrect reg data
+        if (!signUpView.isValid()) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        final SignUpModel signUpUser = new SignUpModel(signUpView.getUserName(), signUpView.getUserPassword(),
+                                                       signUpView.getUserEmail());
+
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpUser);
-
         switch (responseCode) {
-            case INCORRECT_AUTH_DATA: {
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
-                        HttpStatus.BAD_REQUEST);
-            }
-
             case OK: {
-                httpSession.setAttribute("userLogin", body.getUserName());
+                httpSession.setAttribute("userLogin", signUpView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                         HttpStatus.OK);
             }
+
+            case LOGIN_IS_BUSY:{
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.conflict", null, Locale.ENGLISH)),
+                        HttpStatus.CONFLICT);
+            }
+
 
             default: {
                 return new ResponseEntity<>(new ResponseCode(false,
@@ -57,4 +66,10 @@ public class SignUpController {
                         HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-    }}
+    }
+}
+            /*case INCORRECT_AUTH_DATA: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                        HttpStatus.BAD_REQUEST);
+            }*/
