@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertSame;
 
 @SuppressWarnings({"DefaultFileTemplate", "RedundantSuppression"})
@@ -28,7 +29,6 @@ import static org.junit.Assert.assertSame;
 public class UserManagerTest {
     @Autowired
     private UserManager userManager;
-
     private static Faker faker;
     private static String userEmail;
     private static String userName;
@@ -52,7 +52,6 @@ public class UserManagerTest {
         userPassword = faker.internet().password();
         signUpUserOk();
     }
-
 
     @Test
     public void checkPasswordByUserNameOk() {
@@ -86,7 +85,6 @@ public class UserManagerTest {
         final UserManager.ResponseCode responseCode = userManager.signInUser(signInModel);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
-
 
     @Test
     public void signUpOk(){
@@ -152,18 +150,13 @@ public class UserManagerTest {
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
-
-    // TODO change password
-
-
     @Test
-    // TODO assertSame for models
     public void getUserByNameOk(){
         UserModel userModel = new UserModel();
         final UserManager.ResponseCode responseCode = userManager.getUserByName(userName,userModel);
         assertSame(responseCode, UserManager.ResponseCode.OK);
-        assertSame(userModel.getUserName().hashCode(), userName.hashCode());
-        assertSame(userModel.getUserEmail().hashCode(), userEmail.hashCode());
+        assertTrue(userModel.getUserName().equals(userName));
+        assertTrue(userModel.getUserEmail().equals(userEmail));
     }
 
     @Test
@@ -173,11 +166,5 @@ public class UserManagerTest {
                                                                                userModel);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
-
-
-
-
-
-
 }
 
