@@ -2,7 +2,6 @@ package tests.Test;
 
 import com.github.javafaker.Faker;
 import lastunion.application.Application;
-import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,6 +18,7 @@ import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@SuppressWarnings("UnnecessaryFullyQualifiedName")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SignInTest {
     @Autowired
     private MockMvc mock;
+    private static TestRequestBuilder requestBuilder;
     private static Faker faker;
     private static String pathUrl;
     private static String userName;
@@ -33,30 +34,36 @@ public class SignInTest {
     private static String userPassword;
 
 
+    @SuppressWarnings("MissortedModifiers")
     @BeforeClass
-    static public void initFaker(){ faker = new Faker(); }
-
-    private static String getJsonRequest(String uName, String uPassword, String uEmail, boolean emailNeeds ){
-        JSONObject jso = new JSONObject();
-        jso.put("userName", uName);
-        jso.put("userPassword", uPassword);
-        if (emailNeeds)
-            jso.put("userEmail", uEmail);
-        return jso.toString();
+    static public void init(){
+        faker = new Faker();
+        requestBuilder = new TestRequestBuilder();
+        requestBuilder.init("userName", "userPassword");
     }
+
+//    private static String getJsonRequest(String uName, String uPassword, String uEmail, boolean emailNeeds ){
+//        final JSONObject jso = new JSONObject();
+//        jso.put("userName", uName);
+//        jso.put("userPassword", uPassword);
+//        if (emailNeeds)
+//            jso.put("userEmail", uEmail);
+//        return jso.toString();
+//    }
 
 
     public void createUser() throws Exception {
         this.mock.perform(
                 post("/api/user/signup")
                         .contentType("application/json")//MediaType.APPLICATION_JSON_VALUE)
-                        .content(getJsonRequest(userName, userPassword, userEmail, true)))
+                        .content(TestRequestBuilder.getJsonRequestForSignUp(userName, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }
 
+    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
     public void setUp(){
         userName = faker.name().username();
@@ -78,7 +85,7 @@ public class SignInTest {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(getJsonRequest(userName, userPassword, userEmail, false)))
+                        .content(requestBuilder.getJsonRequest(userName, userPassword)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
@@ -90,7 +97,7 @@ public class SignInTest {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(getJsonRequest(null , userPassword, userEmail, false)))
+                        .content(requestBuilder.getJsonRequest(null , userPassword)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -102,7 +109,7 @@ public class SignInTest {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(getJsonRequest(userName , null, userEmail, false)))
+                        .content(requestBuilder.getJsonRequest(userName , null)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -115,7 +122,7 @@ public class SignInTest {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(getJsonRequest("Petya" , userPassword, userEmail, false)))
+                        .content(requestBuilder.getJsonRequest("Petya" , userPassword)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -128,7 +135,7 @@ public class SignInTest {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(getJsonRequest(userName , "no", userEmail, false)))
+                        .content(requestBuilder.getJsonRequest(userName , "no")))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))

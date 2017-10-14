@@ -33,6 +33,6 @@ public final class ResponseCode<T> {
     public String getResponseMessage() { return responseMessage;  }
 
     @Nullable
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "MissortedModifiers"})
     public T getData() { return data;   }
 }
