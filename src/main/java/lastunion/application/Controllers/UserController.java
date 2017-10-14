@@ -32,7 +32,6 @@ public class UserController {
         this.userManager = userManager;
     }
 
-    @SuppressWarnings("EnumSwitchStatementWhichMissesCases")
     @RequestMapping(path="/api/user/data", method= RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode<UserView>> getUserData(HttpSession httpSession){
@@ -47,6 +46,7 @@ public class UserController {
         final UserModel userModel = new UserModel();
         final UserManager.ResponseCode responseCode = userManager.getUserByName(userLogin, userModel);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch(responseCode){
             case INCORRECT_LOGIN:{
                 return new ResponseEntity<>(new ResponseCode<>(false,
@@ -102,10 +102,16 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
+        if (!emailView.isFilled()){
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
+        }
+
         // check form for valid
         if (!emailView.isValid()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.email_error", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -144,11 +150,16 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
+        if (!passwordView.isFilled()){
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
+        }
 
 
         if (!passwordView.isValid()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
                     HttpStatus.BAD_REQUEST);
         }
 

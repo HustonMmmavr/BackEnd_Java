@@ -60,7 +60,5 @@ public class UserView implements AbstractView {
     }
 
     @Override
-    public final boolean isValid(){
-        return isFilled();
-    }
+    public final boolean isValid(){  return true;   }
 }

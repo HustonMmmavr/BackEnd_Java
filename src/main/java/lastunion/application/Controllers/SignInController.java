@@ -32,10 +32,16 @@ public class SignInController {
                     )
     public ResponseEntity<ResponseCode> signIn(@RequestBody SignInView signInView, HttpSession httpSession) {
 
+        if (!signInView.isFilled()){
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
+        }
+
         // Incorrect authenticatiion data
         if (!signInView.isValid()){
             return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
                     HttpStatus.BAD_REQUEST);
         }
         final SignInModel signInUser = new SignInModel(signInView.getUserName(), signInView.getUserPassword());

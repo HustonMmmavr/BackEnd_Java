@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("MissortedModifiers")
 public final class ResponseCode<T> {
     private final boolean result;
     private final String responseMessage;

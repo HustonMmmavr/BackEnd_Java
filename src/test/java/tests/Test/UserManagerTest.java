@@ -1,4 +1,4 @@
-package Tests.Test;
+package tests.Test;
 
 import com.github.javafaker.Faker;
 import lastunion.application.Application;
@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.assertSame;
 
-@SuppressWarnings("DefaultFileTemplate")
+@SuppressWarnings({"DefaultFileTemplate", "RedundantSuppression"})
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)

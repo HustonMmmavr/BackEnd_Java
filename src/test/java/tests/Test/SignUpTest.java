@@ -1,4 +1,4 @@
-package Tests.Test;
+package tests.Test;
 
 import com.github.javafaker.Faker;
 import lastunion.application.Application;
@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@Category(Tests.IntegrationTest.class)
-public class ChangeEmailTest {
+@Category(tests.IntegrationTest.class)
+public class SignUpTest {
     @Autowired
     private MockMvc mock;
     private static Faker faker;
@@ -33,7 +33,7 @@ public class ChangeEmailTest {
     private static String userPassword;
 
 
-
+    @SuppressWarnings("MissortedModifiers")
     @BeforeClass
     static public void initFaker(){ faker = new Faker(); }
 
@@ -42,12 +42,6 @@ public class ChangeEmailTest {
         jso.put("userName", uName);
         jso.put("userPassword", uPassword);
         jso.put("userEmail", uEmail);
-        return jso.toString();
-    }
-
-    private static String getJsonRequestNewEmail(String newEmail){
-        JSONObject jso = new JSONObject();
-        jso.put("newEmail", newEmail);
         return jso.toString();
     }
 
@@ -68,7 +62,7 @@ public class ChangeEmailTest {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
-        pathUrl = "/api/user/change_email";
+        pathUrl = "/api/user/signup";
 
         try {
             createUser();
@@ -79,52 +73,38 @@ public class ChangeEmailTest {
     }
 
     @Test
-    public void changeEmailNormal() throws Exception{
+    public void signUpMormal() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(getJsonRequestNewEmail(faker.internet().emailAddress()))
-                        .sessionAttr("userName", userName))
+                        .content(getJsonRequest(faker.name().username(),
+                                                faker.internet().password(),
+                                                faker.internet().emailAddress())))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
+                .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }
 
+
     @Test
-    public void changeEmailIncorrectEmail() throws Exception {
+    public void signUpConflict() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(getJsonRequestNewEmail("aaa"))
-                        .sessionAttr("userName", userName))
+                        .content(getJsonRequest(userName, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Email not valid! en")));
-    }
-
-
-    @Test
-    public void changeEmailNullUserNewEmail() throws Exception{
-        this.mock.perform(
-                post(pathUrl)
-                        .contentType("application/json")
-                        .content(getJsonRequestNewEmail(null))
-                        .sessionAttr("userName", userName))
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Email not valid! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Login already occupied! en")));
     }
 
     @Test
-    public void changeEmailInvalidSession() throws Exception{
+    public void signUnNullUserName() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(getJsonRequest(null , userPassword, userEmail))
-                        .sessionAttr("userName", null))
+                        .content(getJsonRequest(null , userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))

@@ -33,7 +33,5 @@ public final class PasswordView implements AbstractView {
         return newPassword != null && oldPassword != null;
     }
     @Override
-    public boolean isValid() {
-        return isFilled();
-    }
+    public boolean isValid() { return true;  }
 }

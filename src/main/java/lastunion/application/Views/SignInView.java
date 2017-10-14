@@ -22,7 +22,5 @@ public final class SignInView implements AbstractView {
     @Override
     public boolean isFilled(){ return userName != null && userPassword != null;}
     @Override
-    public boolean isValid(){
-        return isFilled();
-    }
+    public boolean isValid(){  return true;  }
 }
