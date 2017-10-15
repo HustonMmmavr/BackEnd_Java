@@ -13,27 +13,27 @@ public class UserDAO {
 
     public UserModel getUserById(final Integer id) {
         final String sql = "SELECT * FROM users WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
-                new UserModel(
-                        rs.getInt("id"),
-                        rs.getString("login"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getInt("score")
-                )
+        return jdbcTemplate.queryForObject(sql, new Object[] {id}, (rs, rowNum) ->
+            new UserModel(
+                rs.getInt("id"),
+                rs.getString("login"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getInt("score")
+            )
         );
     }
 
     public UserModel getUserByName(final String name) {
         final String sql = "SELECT * FROM users WHERE login = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{name}, (rs, rowNum) ->
-                new UserModel(
-                        rs.getInt("id"),
-                        rs.getString("login"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getInt("score")
-                )
+        return jdbcTemplate.queryForObject(sql, new Object[] {name}, (rs, rowNum) ->
+            new UserModel(
+                rs.getInt("id"),
+                rs.getString("login"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getInt("score")
+            )
         );
     }
 

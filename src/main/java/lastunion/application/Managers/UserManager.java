@@ -54,8 +54,9 @@ public class UserManager {
         try {
             final UserModel savedUser = userDAO.getUserByName(userLogin);
 
-            if (checkPassword(password, savedUser.getUserPasswordHash()))
+            if (checkPassword(password, savedUser.getUserPasswordHash())) {
                 return true;
+            }
         } catch (DataAccessException ex) {
             return false;
         }
@@ -70,8 +71,9 @@ public class UserManager {
             final UserModel savedUser = userDAO.getUserByName(signInUserData.getUserName());
 
             // wrong password
-            if (!checkPassword(signInUserData.getUserPassword(), savedUser.getUserPasswordHash()))
+            if (!checkPassword(signInUserData.getUserPassword(), savedUser.getUserPasswordHash())) {
                 return ResponseCode.INCORRECT_PASSWORD;
+            }
         }
         // no user, storaged in database
         catch (EmptyResultDataAccessException ex) {
@@ -127,7 +129,9 @@ public class UserManager {
     }
 
     public boolean userExists(@Nullable String userName) {
-        if (userName == null) return false;
+        if (userName == null) {
+            return false;
+        }
         try {
             userDAO.getUserByName(userName);
             return true;

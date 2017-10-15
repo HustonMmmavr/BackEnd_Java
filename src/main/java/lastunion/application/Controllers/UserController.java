@@ -33,14 +33,14 @@ public class UserController {
     }
 
     @RequestMapping(path = "/api/user/data", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode<UserView>> getUserData(HttpSession httpSession) {
 
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                    HttpStatus.UNAUTHORIZED);//NOT_FOUND);
+                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                HttpStatus.UNAUTHORIZED);//NOT_FOUND);
         }
 
         final UserView userView = new UserView();
@@ -51,8 +51,8 @@ public class UserController {
         switch (responseCode) {
             case INCORRECT_LOGIN: {
                 return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
-                        HttpStatus.FORBIDDEN);
+                    messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                    HttpStatus.FORBIDDEN);
             }
             case OK: {
                 // filling info about user
@@ -62,58 +62,58 @@ public class UserController {
                 userView.setUserHighScore(userModel.getUserHighScore());
 
                 return new ResponseEntity<>(new ResponseCode<>(true,
-                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
-                        userView), HttpStatus.OK);
+                    messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
+                    userView), HttpStatus.OK);
             }
             default: {
                 return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+                    messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
 
     @RequestMapping(path = "/api/user/logout", method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> logout(HttpSession httpSession) {
 
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                    HttpStatus.UNAUTHORIZED);
+                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                HttpStatus.UNAUTHORIZED);
         }
 
         httpSession.invalidate();
         return new ResponseEntity<>(new ResponseCode<>(true,
-                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
-                HttpStatus.OK);
+            messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+            HttpStatus.OK);
     }
 
     @RequestMapping(path = "/api/user/change_email", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changeEmail(@RequestBody EmailView emailView,
                                                     HttpSession httpSession) {
         // Check is there userName
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                    HttpStatus.UNAUTHORIZED);
+                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                HttpStatus.UNAUTHORIZED);
         }
 
         if (!emailView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
-                    HttpStatus.BAD_REQUEST);
+                messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                HttpStatus.BAD_REQUEST);
         }
 
         // check form for valid
         if (!emailView.isValid()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
-                    HttpStatus.BAD_REQUEST);
+                messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
+                HttpStatus.BAD_REQUEST);
         }
 
         final UserManager.ResponseCode responseCode = userManager.changeUserEmail(emailView.getNewEmail(), userName);
@@ -122,25 +122,25 @@ public class UserController {
         switch (responseCode) {
             case INCORRECT_LOGIN: {//
                 return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
-                        HttpStatus.NOT_FOUND);
+                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                    HttpStatus.NOT_FOUND);
             }
             case OK: {
                 return new ResponseEntity<>(new ResponseCode<>(true,
-                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
-                        HttpStatus.OK);
+                    messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                    HttpStatus.OK);
             }
             default: {
                 return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+                    messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH)),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
 
 
     @RequestMapping(path = "/api/user/change_password", method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changePassword(@RequestBody PasswordView passwordView,
                                                        HttpSession httpSession) {
         // Check is there userName
@@ -148,27 +148,27 @@ public class UserController {
 
         if (!userManager.userExists(userName)) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                    HttpStatus.UNAUTHORIZED);
+                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                HttpStatus.UNAUTHORIZED);
         }
 
 
         if (!passwordView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
-                    HttpStatus.BAD_REQUEST);
+                messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                HttpStatus.BAD_REQUEST);
         }
 
         if (!passwordView.isValid()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
-                    HttpStatus.BAD_REQUEST);
+                messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
+                HttpStatus.BAD_REQUEST);
         }
 
         if (!userManager.checkPasswordByUserName(passwordView.getOldPassword(), userName)) {
             return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
-                    HttpStatus.FORBIDDEN);
+                messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                HttpStatus.FORBIDDEN);
         }
 
         final UserManager.ResponseCode responseCode = userManager.changeUserPassword(passwordView.getNewPassword(), userName);
@@ -177,26 +177,26 @@ public class UserController {
         switch (responseCode) {
             case OK: {
                 return new ResponseEntity<>(new ResponseCode<>(true,
-                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
-                        HttpStatus.OK);
+                    messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                    HttpStatus.OK);
             }
             default: {
                 return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+                    messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH)),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
 
     @RequestMapping(path = "/api/user/delete", method = RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> deleteUser(HttpSession httpSession) {
         final String userName = (String) httpSession.getAttribute("userName");
 
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                    HttpStatus.UNAUTHORIZED);
+                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                HttpStatus.UNAUTHORIZED);
         }
 
         final UserManager.ResponseCode responseCode = userManager.deleteUserByName(userName);
@@ -206,13 +206,13 @@ public class UserController {
             case OK: {
                 httpSession.invalidate();
                 return new ResponseEntity<>(new ResponseCode(true,
-                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
-                        HttpStatus.OK);
+                    messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                    HttpStatus.OK);
             }
             default: {
                 return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+                    messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }

@@ -31,23 +31,23 @@ public class SignUpController {
     }
 
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> signUp(@RequestBody SignUpView signUpView, HttpSession httpSession) {
 
         if (!signUpView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
-                    HttpStatus.BAD_REQUEST);
+                messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                HttpStatus.BAD_REQUEST);
         }
         // Incorrect reg data
         if (!signUpView.isValid()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
-                    HttpStatus.BAD_REQUEST);
+                messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
+                HttpStatus.BAD_REQUEST);
         }
 
         final SignUpModel signUpUser = new SignUpModel(signUpView.getUserName(), signUpView.getUserPassword(),
-                signUpView.getUserEmail());
+            signUpView.getUserEmail());
 
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpUser);
         //noinspection EnumSwitchStatementWhichMissesCases
@@ -56,20 +56,20 @@ public class SignUpController {
 
                 httpSession.setAttribute("userLogin", signUpView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
-                        messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
-                        HttpStatus.OK);
+                    messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
+                    HttpStatus.OK);
             }
 
             case LOGIN_IS_BUSY: {
                 return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.conflict", null, Locale.ENGLISH)),
-                        HttpStatus.CONFLICT);
+                    messageSource.getMessage("msgs.conflict", null, Locale.ENGLISH)),
+                    HttpStatus.CONFLICT);
             }
 
             default: {
                 return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+                    messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
