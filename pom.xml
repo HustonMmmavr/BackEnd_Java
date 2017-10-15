@@ -140,8 +140,20 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.12</version>
                 <configuration>
-                    <groups>com.lastunion.tests.IntegrationTest</groups>
+					<includes>
+						<include>**/*_IT.java</include>
+					</includes>
+                    <!--<groups>com.lastunion.tests.IntegrationTest</groups>-->
                 </configuration>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
                 <!--<executions>-->
                     <!--<execution>-->
                         <!--<goals>-->
