@@ -1,9 +1,9 @@
-package lastunion.application.Managers;
+package lastunion.application.managers;
 
-import lastunion.application.DAO.UserDAO;
-import lastunion.application.Models.SignInModel;
-import lastunion.application.Models.SignUpModel;
-import lastunion.application.Models.UserModel;
+import lastunion.application.dao.UserDAO;
+import lastunion.application.models.SignInModel;
+import lastunion.application.models.SignUpModel;
+import lastunion.application.models.UserModel;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -74,13 +74,9 @@ public class UserManager {
             if (!checkPassword(signInUserData.getUserPassword(), savedUser.getUserPasswordHash())) {
                 return ResponseCode.INCORRECT_PASSWORD;
             }
-        }
-        // no user, storaged in database
-        catch (EmptyResultDataAccessException ex) {
+        } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        }
-        // error in work with db
-        catch (DataAccessException ex) {
+        } catch (DataAccessException ex) {
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -95,13 +91,9 @@ public class UserManager {
         // trying to save user
         try {
             userDAO.saveUser(newUser);
-        }
-        // user with this login exist
-        catch (DuplicateKeyException dupEx) {
+        } catch (DuplicateKeyException dupEx) {
             return ResponseCode.LOGIN_IS_BUSY;
-        }
-        // error in work with db
-        catch (DataAccessException daEx) {
+        } catch (DataAccessException daEx) {
             return ResponseCode.DATABASE_ERROR;
         }
 
@@ -116,13 +108,9 @@ public class UserManager {
             final UserModel modifiedUser = new UserModel(user);
             modifiedUser.setUserEmail(newEmail);
             userDAO.modifyUser(user, modifiedUser);
-        }
-        // No user found
-        catch (EmptyResultDataAccessException ex) {
+        } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        }
-        // error db
-        catch (DataAccessException ex) {
+        } catch (DataAccessException ex) {
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -148,13 +136,9 @@ public class UserManager {
             final UserModel modifiedUser = new UserModel(user);
             modifiedUser.setUserPasswordHash(makePasswordHash(newPassword));
             userDAO.modifyUser(user, modifiedUser);
-        }
-        // No user found
-        catch (EmptyResultDataAccessException ex) {
+        } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        }
-        // error db
-        catch (DataAccessException ex) {
+        } catch (DataAccessException ex) {
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -164,6 +148,34 @@ public class UserManager {
         // trying to get storaged user
         try {
             final UserModel tempUser = userDAO.getUserByName(userName);
+            user.setUserName(tempUser.getUserName());
+            user.setUserEmail(tempUser.getUserEmail());
+            user.setUserHighScore(tempUser.getUserHighScore());
+        } catch (EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_LOGIN;
+        } catch (DataAccessException ex) {
+            return ResponseCode.DATABASE_ERROR;
+        }
+        return ResponseCode.OK;
+    }
+
+    public ResponseCode deleteUserByName(@NotNull final String userName) {
+        // trying to get storaged user
+        try {
+            userDAO.deleteUserByName(userName);
+        } catch (EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_LOGIN;
+        } catch (DataAccessException ex) {
+            return ResponseCode.DATABASE_ERROR;
+        }
+        return ResponseCode.OK;
+    }
+    /*
+    @SuppressWarnings("unused")
+    public ResponseCode getUserById(@NotNull final Integer userId, UserModel user){
+        // trying to get storaged user
+        try {
+            final UserModel tempUser = userDAO.getUserById(userId);
             user.setUserName(tempUser.getUserName());
             user.setUserEmail(tempUser.getUserEmail());
             user.setUserHighScore(tempUser.getUserHighScore());
@@ -178,40 +190,5 @@ public class UserManager {
         }
         return ResponseCode.OK;
     }
-
-    public ResponseCode deleteUserByName(@NotNull final String userName) {
-        // trying to get storaged user
-        try {
-            userDAO.deleteUserByName(userName);
-        }
-        // No user found
-        catch (EmptyResultDataAccessException ex) {
-            return ResponseCode.INCORRECT_LOGIN;
-        }
-        // error db
-        catch (DataAccessException ex) {
-            return ResponseCode.DATABASE_ERROR;
-        }
-        return ResponseCode.OK;
-    }
-
-//    @SuppressWarnings("unused")
-//    public ResponseCode getUserById(@NotNull final Integer userId, UserModel user){
-//        // trying to get storaged user
-//        try {
-//            final UserModel tempUser = userDAO.getUserById(userId);
-//            user.setUserName(tempUser.getUserName());
-//            user.setUserEmail(tempUser.getUserEmail());
-//            user.setUserHighScore(tempUser.getUserHighScore());
-//        }
-//        // No user found
-//        catch (EmptyResultDataAccessException ex) {
-//            return ResponseCode.INCORRECT_LOGIN;
-//        }
-//        // error db
-//        catch (DataAccessException ex) {
-//            return ResponseCode.DATABASE_ERROR;
-//        }
-//        return ResponseCode.OK;
-//    }
+    */
 }

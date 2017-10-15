@@ -1,4 +1,4 @@
-package lastunion.application.Models;
+package lastunion.application.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

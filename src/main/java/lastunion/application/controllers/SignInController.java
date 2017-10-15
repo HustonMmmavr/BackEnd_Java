@@ -1,9 +1,9 @@
-package lastunion.application.Controllers;
+package lastunion.application.controllers;
 
-import lastunion.application.Managers.UserManager;
-import lastunion.application.Models.SignInModel;
-import lastunion.application.Views.ResponseCode;
-import lastunion.application.Views.SignInView;
+import lastunion.application.managers.UserManager;
+import lastunion.application.models.SignInModel;
+import lastunion.application.views.ResponseCode;
+import lastunion.application.views.SignInView;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,24 +51,22 @@ public class SignInController {
         switch (responseCode) {
 
             case INCORRECT_LOGIN:
-            case INCORRECT_PASSWORD: {
+            case INCORRECT_PASSWORD:
                 return new ResponseEntity<>(new ResponseCode(false,
                     messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
                     HttpStatus.FORBIDDEN);
-            }
 
-            case OK: {
+            case OK:
                 httpSession.setAttribute("userLogin", signInView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                     messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                     HttpStatus.OK);
-            }
 
-            default: {
+            default:
                 return new ResponseEntity<>(new ResponseCode(false,
                     messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
                     HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+
         }
     }
 }

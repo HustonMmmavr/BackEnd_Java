@@ -2,10 +2,10 @@ package tests.UnitTest;
 
 import com.github.javafaker.Faker;
 import lastunion.application.Application;
-import lastunion.application.Managers.UserManager;
-import lastunion.application.Models.SignInModel;
-import lastunion.application.Models.SignUpModel;
-import lastunion.application.Models.UserModel;
+import lastunion.application.managers.UserManager;
+import lastunion.application.models.SignInModel;
+import lastunion.application.models.SignUpModel;
+import lastunion.application.models.UserModel;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

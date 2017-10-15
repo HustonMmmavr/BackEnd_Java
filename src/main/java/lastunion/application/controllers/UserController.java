@@ -1,4 +1,4 @@
-package lastunion.application.Controllers;
+package lastunion.application.controllers;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import lastunion.application.Managers.UserManager;
-import lastunion.application.Views.ResponseCode;
-import lastunion.application.Views.UserView;
-import lastunion.application.Models.UserModel;
-import lastunion.application.Views.PasswordView;
-import lastunion.application.Views.EmailView;
+import lastunion.application.managers.UserManager;
+import lastunion.application.views.ResponseCode;
+import lastunion.application.views.UserView;
+import lastunion.application.models.UserModel;
+import lastunion.application.views.PasswordView;
+import lastunion.application.views.EmailView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -39,8 +39,8 @@ public class UserController {
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                HttpStatus.UNAUTHORIZED);//NOT_FOUND);
+                messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                HttpStatus.NOT_FOUND);
         }
 
         final UserView userView = new UserView();
@@ -49,12 +49,12 @@ public class UserController {
 
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
-            case INCORRECT_LOGIN: {
+            case INCORRECT_LOGIN:
                 return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
                     HttpStatus.FORBIDDEN);
-            }
-            case OK: {
+
+            case OK:
                 // filling info about user
                 userView.setUserId(userModel.getUserId());
                 userView.setUserLogin(userModel.getUserName());
@@ -64,12 +64,12 @@ public class UserController {
                 return new ResponseEntity<>(new ResponseCode<>(true,
                     messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
                     userView), HttpStatus.OK);
-            }
-            default: {
+
+            default:
                 return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
                     HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+
         }
     }
 
@@ -99,8 +99,8 @@ public class UserController {
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                HttpStatus.UNAUTHORIZED);
+                messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                HttpStatus.NOT_FOUND);
         }
 
         if (!emailView.isFilled()) {
@@ -120,21 +120,21 @@ public class UserController {
 
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
-            case INCORRECT_LOGIN: {//
+            case INCORRECT_LOGIN:
                 return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
                     HttpStatus.NOT_FOUND);
-            }
-            case OK: {
+
+            case OK:
                 return new ResponseEntity<>(new ResponseCode<>(true,
                     messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                     HttpStatus.OK);
-            }
-            default: {
+
+            default:
                 return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH)),
                     HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+
         }
     }
 
@@ -148,8 +148,8 @@ public class UserController {
 
         if (!userManager.userExists(userName)) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                HttpStatus.UNAUTHORIZED);
+                messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                HttpStatus.NOT_FOUND);
         }
 
 
@@ -175,16 +175,16 @@ public class UserController {
 
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
-            case OK: {
+            case OK:
                 return new ResponseEntity<>(new ResponseCode<>(true,
                     messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                     HttpStatus.OK);
-            }
-            default: {
+
+            default:
                 return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH)),
                     HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+
         }
     }
 
@@ -195,25 +195,25 @@ public class UserController {
 
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
-                HttpStatus.UNAUTHORIZED);
+                messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                HttpStatus.NOT_FOUND);
         }
 
         final UserManager.ResponseCode responseCode = userManager.deleteUserByName(userName);
 
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
-            case OK: {
+            case OK:
                 httpSession.invalidate();
                 return new ResponseEntity<>(new ResponseCode(true,
                     messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                     HttpStatus.OK);
-            }
-            default: {
+
+            default:
                 return new ResponseEntity<>(new ResponseCode(false,
                     messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
                     HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+
         }
     }
 }

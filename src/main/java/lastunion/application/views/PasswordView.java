@@ -1,4 +1,4 @@
-package lastunion.application.Views;
+package lastunion.application.views;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,11 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public final class PasswordView implements AbstractView {
     private final String oldPassword;
     private final String newPassword;
-
-    /**
-     * @param oldPassword - string, contains old password
-     * @param newPassword - string, contains new password
-     */
 
     @SuppressWarnings("unused")
     @JsonCreator

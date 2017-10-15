@@ -1,4 +1,4 @@
-package lastunion.application.Views;
+package lastunion.application.views;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,7 +37,7 @@ public final class ResponseCode<T> {
     }
 
     @Nullable
-    @SuppressWarnings( {"unused", "MissortedModifiers"})
+    @SuppressWarnings({"unused", "MissortedModifiers"})
     public T getData() {
         return data;
     }

@@ -1,4 +1,4 @@
-package lastunion.application.Models;
+package lastunion.application.models;
 
 public final class UserModel {
     private Integer userId;

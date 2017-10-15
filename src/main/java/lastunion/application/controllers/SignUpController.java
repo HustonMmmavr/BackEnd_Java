@@ -1,9 +1,9 @@
-package lastunion.application.Controllers;
+package lastunion.application.controllers;
 
-import lastunion.application.Managers.UserManager;
-import lastunion.application.Models.SignUpModel;
-import lastunion.application.Views.ResponseCode;
-import lastunion.application.Views.SignUpView;
+import lastunion.application.managers.UserManager;
+import lastunion.application.models.SignUpModel;
+import lastunion.application.views.ResponseCode;
+import lastunion.application.views.SignUpView;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,25 +52,22 @@ public class SignUpController {
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpUser);
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
-            case OK: {
-
+            case OK:
                 httpSession.setAttribute("userLogin", signUpView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                     messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
                     HttpStatus.OK);
-            }
 
-            case LOGIN_IS_BUSY: {
+            case LOGIN_IS_BUSY:
                 return new ResponseEntity<>(new ResponseCode(false,
                     messageSource.getMessage("msgs.conflict", null, Locale.ENGLISH)),
                     HttpStatus.CONFLICT);
-            }
 
-            default: {
+            default:
                 return new ResponseEntity<>(new ResponseCode(false,
                     messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
                     HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+
         }
     }
 }

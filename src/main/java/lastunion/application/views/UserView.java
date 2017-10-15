@@ -1,6 +1,6 @@
-package lastunion.application.Views;
+package lastunion.application.views;
 
-import lastunion.application.Models.UserModel;
+import lastunion.application.models.UserModel;
 
 import javax.validation.constraints.NotNull;
 
