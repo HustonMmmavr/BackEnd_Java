@@ -39,8 +39,8 @@ public class UserController {
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
-                    HttpStatus.NOT_FOUND);
+                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                    HttpStatus.UNAUTHORIZED);//NOT_FOUND);
         }
 
         final UserView userView = new UserView();
@@ -80,8 +80,8 @@ public class UserController {
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
-                    HttpStatus.NOT_FOUND);
+                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                    HttpStatus.UNAUTHORIZED);
         }
 
         httpSession.invalidate();
@@ -99,8 +99,8 @@ public class UserController {
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
-                    HttpStatus.NOT_FOUND);
+                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                    HttpStatus.UNAUTHORIZED);
         }
 
         if (!emailView.isFilled()) {
@@ -148,8 +148,8 @@ public class UserController {
 
         if (!userManager.userExists(userName)) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
-                    HttpStatus.NOT_FOUND);
+                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                    HttpStatus.UNAUTHORIZED);
         }
 
 
@@ -195,8 +195,8 @@ public class UserController {
 
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
-                    HttpStatus.NOT_FOUND);
+                    messageSource.getMessage("msgs.unauthorized", null, Locale.ENGLISH)),
+                    HttpStatus.UNAUTHORIZED);
         }
 
         final UserManager.ResponseCode responseCode = userManager.deleteUserByName(userName);
