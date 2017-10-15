@@ -27,12 +27,18 @@ public final class ResponseCode<T> {
     }
 
     @SuppressWarnings("unused")
-    public boolean getResult() { return result; }
+    public boolean getResult() {
+        return result;
+    }
 
     @SuppressWarnings("unused")
-    public String getResponseMessage() { return responseMessage;  }
+    public String getResponseMessage() {
+        return responseMessage;
+    }
 
     @Nullable
-    @SuppressWarnings({"unused", "MissortedModifiers"})
-    public T getData() { return data;   }
+    @SuppressWarnings( {"unused", "MissortedModifiers"})
+    public T getData() {
+        return data;
+    }
 }
