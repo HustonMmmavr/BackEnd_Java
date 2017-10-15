@@ -36,10 +36,9 @@ public class ChangeEmailTest {
     private static String userPassword;
 
 
-
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
-    static public void init(){
+    static public void init() {
         faker = new Faker();
         requestBuilder = new TestRequestBuilder();
         requestBuilder.init("newEmail");
@@ -58,7 +57,7 @@ public class ChangeEmailTest {
 
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp(){
+    public void setUp() {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
@@ -66,14 +65,13 @@ public class ChangeEmailTest {
 
         try {
             createUser();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException();
         }
     }
 
     @Test
-    public void changeEmailNormal() throws Exception{
+    public void changeEmailNormal() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -100,7 +98,7 @@ public class ChangeEmailTest {
 
 
     @Test
-    public void changeEmailNullUserNewEmail() throws Exception{
+    public void changeEmailNullUserNewEmail() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -113,7 +111,7 @@ public class ChangeEmailTest {
     }
 
     @Test
-    public void changeEmailNullSession() throws Exception{
+    public void changeEmailNullSession() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -125,7 +123,7 @@ public class ChangeEmailTest {
     }
 
     @Test
-    public void changeEmailInvalidSession() throws Exception{
+    public void changeEmailInvalidSession() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -138,7 +136,7 @@ public class ChangeEmailTest {
     }
 
     @Test
-    public void changeEmailIncorrectDocumentType() throws Exception{
+    public void changeEmailIncorrectDocumentType() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("text/html"))

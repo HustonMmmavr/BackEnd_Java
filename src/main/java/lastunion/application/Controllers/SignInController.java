@@ -27,19 +27,19 @@ public class SignInController {
         this.userManager = userManager;
     }
 
-    @RequestMapping(path="/api/user/signin", method = RequestMethod.POST,
-                    produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
-                    )
+    @RequestMapping(path = "/api/user/signin", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<ResponseCode> signIn(@RequestBody SignInView signInView, HttpSession httpSession) {
 
-        if (!signInView.isFilled()){
+        if (!signInView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode(false,
                     messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
                     HttpStatus.BAD_REQUEST);
         }
 
         // Incorrect authenticatiion data
-        if (!signInView.isValid()){
+        if (!signInView.isValid()) {
             return new ResponseEntity<>(new ResponseCode(false,
                     messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
                     HttpStatus.BAD_REQUEST);

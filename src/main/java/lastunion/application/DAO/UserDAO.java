@@ -7,11 +7,11 @@ public class UserDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDAO(final JdbcTemplate jdbcTemplate){
+    public UserDAO(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public UserModel getUserById(final Integer id)  {
+    public UserModel getUserById(final Integer id) {
         final String sql = "SELECT * FROM users WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
                 new UserModel(
@@ -24,7 +24,7 @@ public class UserDAO {
         );
     }
 
-    public UserModel getUserByName(final String name)  {
+    public UserModel getUserByName(final String name) {
         final String sql = "SELECT * FROM users WHERE login = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{name}, (rs, rowNum) ->
                 new UserModel(
@@ -38,7 +38,7 @@ public class UserDAO {
     }
 
     @SuppressWarnings("InstanceMethodNamingConvention")
-    private void AppendStringField(StringBuilder builder, String fieldName, String value){
+    private void AppendStringField(StringBuilder builder, String fieldName, String value) {
         builder.append(fieldName);
         builder.append('=');
         builder.append('\'');
@@ -49,14 +49,14 @@ public class UserDAO {
 
     @SuppressWarnings("InstanceMethodNamingConvention")
     private void AppendIntegerField(StringBuilder builder, @SuppressWarnings("SameParameterValue") String fieldName,
-                                    Integer value){
+                                    Integer value) {
         builder.append(fieldName);
         builder.append('=');
         builder.append(value);
     }
 
     public void modifyUser(UserModel user, UserModel changedUser) {
-        final StringBuilder builder = new StringBuilder ("UPDATE users set ");// login = ");
+        final StringBuilder builder = new StringBuilder("UPDATE users set ");// login = ");
         AppendStringField(builder, "login", changedUser.getUserName());
         AppendStringField(builder, "email", changedUser.getUserEmail());
         AppendStringField(builder, "password", changedUser.getUserPasswordHash());
@@ -68,7 +68,7 @@ public class UserDAO {
     }
 
     @SuppressWarnings("StringBufferReplaceableByString")
-    public void saveUser(UserModel user)  {
+    public void saveUser(UserModel user) {
         final StringBuilder builder = new StringBuilder("INSERT INTO users (login, email, password) VALUES(");
         builder.append('\'');
         builder.append(user.getUserName());
@@ -87,7 +87,7 @@ public class UserDAO {
     }
 
     @SuppressWarnings("StringBufferReplaceableByString")
-    public void deleteUserByName(final String userName){
+    public void deleteUserByName(final String userName) {
         final StringBuilder builder = new StringBuilder("DELETE FROM users WHERE login = ");
         builder.append('\'');
         builder.append(userName);
@@ -96,7 +96,7 @@ public class UserDAO {
         executeQuery(builder.toString());
     }
 
-    private void executeQuery(String query)  {
+    private void executeQuery(String query) {
         jdbcTemplate.update(query);
     }
 

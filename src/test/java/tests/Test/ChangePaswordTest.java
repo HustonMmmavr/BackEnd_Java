@@ -151,7 +151,7 @@ public class ChangePaswordTest {
     }
 
     @Test
-    public void changePasswordInvalidSession() throws Exception{
+    public void changePasswordInvalidSession() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")

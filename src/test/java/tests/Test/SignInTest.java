@@ -36,7 +36,7 @@ public class SignInTest {
 
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
-    static public void init(){
+    static public void init() {
         faker = new Faker();
         requestBuilder = new TestRequestBuilder();
         requestBuilder.init("userName", "userPassword");
@@ -65,7 +65,7 @@ public class SignInTest {
 
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp(){
+    public void setUp() {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
@@ -73,15 +73,14 @@ public class SignInTest {
 
         try {
             createUser();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException();
         }
     }
 
 
     @Test
-    public void signInNormal() throws Exception{
+    public void signInNormal() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -93,11 +92,11 @@ public class SignInTest {
     }
 
     @Test
-    public void signInNullUserName() throws Exception{
+    public void signInNullUserName() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(null , userPassword)))
+                        .content(requestBuilder.getJsonRequest(null, userPassword)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -105,11 +104,11 @@ public class SignInTest {
     }
 
     @Test
-    public void signInNullUserPassword() throws Exception{
+    public void signInNullUserPassword() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userName , null)))
+                        .content(requestBuilder.getJsonRequest(userName, null)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -118,11 +117,11 @@ public class SignInTest {
 
 
     @Test
-    public void signInIncorrectUserName() throws Exception{
+    public void signInIncorrectUserName() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest("Petya" , userPassword)))
+                        .content(requestBuilder.getJsonRequest("Petya", userPassword)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -131,11 +130,11 @@ public class SignInTest {
 
 
     @Test
-    public void signInIncorrectUserPassword() throws Exception{
+    public void signInIncorrectUserPassword() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userName , "no")))
+                        .content(requestBuilder.getJsonRequest(userName, "no")))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -144,10 +143,10 @@ public class SignInTest {
 
 
     @Test
-    public void signInIncorrectDocumentType() throws Exception{
+    public void signInIncorrectDocumentType() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("text/html"))
-                       .andExpect(status().isUnsupportedMediaType());
+                .andExpect(status().isUnsupportedMediaType());
     }
 }

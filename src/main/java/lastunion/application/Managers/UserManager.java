@@ -19,7 +19,8 @@ import javax.validation.constraints.NotNull;
 
 @Service
 public class UserManager {
-    @NotNull private final UserDAO userDAO;
+    @NotNull
+    private final UserDAO userDAO;
 
     public enum ResponseCode {
         @SuppressWarnings("EnumeratedConstantNamingConvention") OK,
@@ -30,7 +31,7 @@ public class UserManager {
     }
 
     @Autowired
-    public UserManager(final JdbcTemplate jdbcTemplate){
+    public UserManager(final JdbcTemplate jdbcTemplate) {
         userDAO = new UserDAO(jdbcTemplate);
     }
 
@@ -41,23 +42,21 @@ public class UserManager {
         return new BCryptPasswordEncoder();
     }
 
-    private String  makePasswordHash(@NotNull final String password) {
+    private String makePasswordHash(@NotNull final String password) {
         return passwordEncoder().encode(password);
     }
 
-    private boolean checkPassword(@NotNull final String password, @NotNull final String passwordHash){
+    private boolean checkPassword(@NotNull final String password, @NotNull final String passwordHash) {
         return passwordEncoder().matches(password, passwordHash);
     }
 
-    public boolean checkPasswordByUserName(@NotNull final String password, @NotNull final String userLogin)
-    {
+    public boolean checkPasswordByUserName(@NotNull final String password, @NotNull final String userLogin) {
         try {
             final UserModel savedUser = userDAO.getUserByName(userLogin);
 
             if (checkPassword(password, savedUser.getUserPasswordHash()))
                 return true;
-        }
-        catch(DataAccessException ex){
+        } catch (DataAccessException ex) {
             return false;
         }
         return false;
@@ -75,11 +74,11 @@ public class UserManager {
                 return ResponseCode.INCORRECT_PASSWORD;
         }
         // no user, storaged in database
-        catch(EmptyResultDataAccessException ex) {
+        catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         }
         // error in work with db
-        catch(DataAccessException ex){
+        catch (DataAccessException ex) {
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -96,18 +95,18 @@ public class UserManager {
             userDAO.saveUser(newUser);
         }
         // user with this login exist
-        catch(DuplicateKeyException dupEx) {
+        catch (DuplicateKeyException dupEx) {
             return ResponseCode.LOGIN_IS_BUSY;
         }
         // error in work with db
-        catch(DataAccessException daEx) {
+        catch (DataAccessException daEx) {
             return ResponseCode.DATABASE_ERROR;
         }
 
         return ResponseCode.OK;
     }
 
-    public ResponseCode changeUserEmail(@NotNull final String newEmail, @NotNull final String userName){
+    public ResponseCode changeUserEmail(@NotNull final String newEmail, @NotNull final String userName) {
         // trying to get storaged user and copy its data to new
         // user, than in new user modify email and save it
         try {
@@ -132,12 +131,12 @@ public class UserManager {
         try {
             userDAO.getUserByName(userName);
             return true;
-        } catch (RuntimeException ex){
+        } catch (RuntimeException ex) {
             return false;
         }
     }
 
-    public ResponseCode changeUserPassword(@NotNull final String newPassword, @NotNull final String userName){
+    public ResponseCode changeUserPassword(@NotNull final String newPassword, @NotNull final String userName) {
         // trying to get storaged user and copy its data to new
         // user, than in new user modify email and save it
         try {
@@ -157,7 +156,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode getUserByName(@NotNull final String userName, UserModel user){
+    public ResponseCode getUserByName(@NotNull final String userName, UserModel user) {
         // trying to get storaged user
         try {
             final UserModel tempUser = userDAO.getUserByName(userName);
@@ -176,7 +175,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode deleteUserByName(@NotNull final String userName){
+    public ResponseCode deleteUserByName(@NotNull final String userName) {
         // trying to get storaged user
         try {
             userDAO.deleteUserByName(userName);

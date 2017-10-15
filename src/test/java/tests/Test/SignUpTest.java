@@ -36,7 +36,7 @@ public class SignUpTest {
 
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
-    static public void initFaker(){
+    static public void initFaker() {
         faker = new Faker();
         requestBuilder = new TestRequestBuilder();
         requestBuilder.init("userName", "userPassword", "userEmail");
@@ -56,7 +56,7 @@ public class SignUpTest {
 
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp(){
+    public void setUp() {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
@@ -64,20 +64,19 @@ public class SignUpTest {
 
         try {
             createUser();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException();
         }
     }
 
     @Test
-    public void signUpMormal() throws Exception{
+    public void signUpMormal() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
                         .content(requestBuilder.getJsonRequest(faker.name().username(),
-                                                faker.internet().password(),
-                                                faker.internet().emailAddress())))
+                                faker.internet().password(),
+                                faker.internet().emailAddress())))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
@@ -86,7 +85,7 @@ public class SignUpTest {
 
 
     @Test
-    public void signUpConflict() throws Exception{
+    public void signUpConflict() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -98,11 +97,11 @@ public class SignUpTest {
     }
 
     @Test
-    public void signUnNullUserName() throws Exception{
+    public void signUnNullUserName() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(null , userPassword, userEmail)))
+                        .content(requestBuilder.getJsonRequest(null, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -110,24 +109,11 @@ public class SignUpTest {
     }
 
     @Test
-    public void signUpNullUserPassword() throws Exception{
+    public void signUpNullUserPassword() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userName , null, userEmail)))
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
-    }
-
-
-    @Test
-    public void signUpNullUserEmail() throws Exception{
-        this.mock.perform(
-                post(pathUrl)
-                        .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userName , userPassword, null)))
+                        .content(requestBuilder.getJsonRequest(userName, null, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -136,7 +122,20 @@ public class SignUpTest {
 
 
     @Test
-    public void signUnIncorrectDocumentType() throws Exception{
+    public void signUpNullUserEmail() throws Exception {
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(userName, userPassword, null)))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+    }
+
+
+    @Test
+    public void signUnIncorrectDocumentType() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("text/html"))

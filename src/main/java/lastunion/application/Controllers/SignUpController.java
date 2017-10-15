@@ -25,16 +25,16 @@ public class SignUpController {
     @NotNull
     private final UserManager userManager;
 
-    public SignUpController(@NotNull UserManager userManager,@NotNull MessageSource messageSource) {
+    public SignUpController(@NotNull UserManager userManager, @NotNull MessageSource messageSource) {
         this.messageSource = messageSource;
         this.userManager = userManager;
     }
 
-    @RequestMapping(path="/api/user/signup", method = RequestMethod.POST,
+    @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> signUp(@RequestBody SignUpView signUpView, HttpSession httpSession) {
 
-        if (!signUpView.isFilled()){
+        if (!signUpView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode(false,
                     messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
                     HttpStatus.BAD_REQUEST);
@@ -47,7 +47,7 @@ public class SignUpController {
         }
 
         final SignUpModel signUpUser = new SignUpModel(signUpView.getUserName(), signUpView.getUserPassword(),
-                                                       signUpView.getUserEmail());
+                signUpView.getUserEmail());
 
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpUser);
         //noinspection EnumSwitchStatementWhichMissesCases
@@ -60,7 +60,7 @@ public class SignUpController {
                         HttpStatus.OK);
             }
 
-            case LOGIN_IS_BUSY:{
+            case LOGIN_IS_BUSY: {
                 return new ResponseEntity<>(new ResponseCode(false,
                         messageSource.getMessage("msgs.conflict", null, Locale.ENGLISH)),
                         HttpStatus.CONFLICT);

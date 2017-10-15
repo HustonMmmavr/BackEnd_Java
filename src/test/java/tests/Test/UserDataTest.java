@@ -37,7 +37,9 @@ public class UserDataTest {
 
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
-    static public void init(){ faker = new Faker(); }
+    static public void init() {
+        faker = new Faker();
+    }
 
     public void createUser() throws Exception {
         this.mock.perform(
@@ -52,7 +54,7 @@ public class UserDataTest {
 
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp(){
+    public void setUp() {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
@@ -60,8 +62,7 @@ public class UserDataTest {
 
         try {
             createUser();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException();
         }
     }

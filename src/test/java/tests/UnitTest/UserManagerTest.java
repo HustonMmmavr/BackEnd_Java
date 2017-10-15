@@ -66,30 +66,30 @@ public class UserManagerTest {
     }
 
     @Test
-    public void signInUserOk(){
+    public void signInUserOk() {
         final SignInModel signInModel = new SignInModel(userName, userPassword);
         final UserManager.ResponseCode responseCode = userManager.signInUser(signInModel);
         assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
     @Test
-    public void signInUserWithIncorrectPassword(){
+    public void signInUserWithIncorrectPassword() {
         final SignInModel signInModel = new SignInModel(userName, faker.internet().password());
         final UserManager.ResponseCode responseCode = userManager.signInUser(signInModel);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_PASSWORD);
     }
 
     @Test
-    public void signInUserThatNotExist(){
+    public void signInUserThatNotExist() {
         final SignInModel signInModel = new SignInModel(faker.name().username(), userPassword);
         final UserManager.ResponseCode responseCode = userManager.signInUser(signInModel);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
     @Test
-    public void signUpOk(){
+    public void signUpOk() {
         final SignUpModel signUpModel = new SignUpModel(faker.name().username(), faker.internet().password(),
-                                                        faker.internet().emailAddress());
+                faker.internet().emailAddress());
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpModel);
         assertSame(responseCode, UserManager.ResponseCode.OK);
     }
@@ -102,20 +102,20 @@ public class UserManagerTest {
     }
 
     @Test
-    public void checkUserThatExist(){
+    public void checkUserThatExist() {
         final boolean result = userManager.userExists(userName);
         assertSame(result, true);
 
     }
 
     @Test
-    public void checkNullUser(){
+    public void checkNullUser() {
         final boolean result = userManager.userExists(faker.name().username());
         assertSame(result, false);
     }
 
     @Test
-    public void checkUserThatNotExist(){
+    public void checkUserThatNotExist() {
         final boolean result = userManager.userExists(null);
         assertSame(result, false);
     }
@@ -123,47 +123,47 @@ public class UserManagerTest {
     //change email change password
 
     @Test
-    public void changeUserEmailOk(){
+    public void changeUserEmailOk() {
         final UserManager.ResponseCode responseCode = userManager.changeUserEmail(faker.internet().emailAddress(),
-                                                                                    userName);
+                userName);
         assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
     @Test
-    public void changeUserEmailWithNotExistingUser(){
+    public void changeUserEmailWithNotExistingUser() {
         final UserManager.ResponseCode responseCode = userManager.changeUserEmail(faker.internet().emailAddress(),
-                                                                                    userName);
+                userName);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
     @Test
-    public void changeUserPasswordOk(){
+    public void changeUserPasswordOk() {
         final UserManager.ResponseCode responseCode = userManager.changeUserEmail(faker.internet().password(),
                 userName);
         assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
     @Test
-    public void changeUserPasswordWithNotExistingUser(){
+    public void changeUserPasswordWithNotExistingUser() {
         final UserManager.ResponseCode responseCode = userManager.changeUserEmail(faker.internet().password(),
                 faker.name().username());
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
     @Test
-    public void getUserByNameOk(){
+    public void getUserByNameOk() {
         UserModel userModel = new UserModel();
-        final UserManager.ResponseCode responseCode = userManager.getUserByName(userName,userModel);
+        final UserManager.ResponseCode responseCode = userManager.getUserByName(userName, userModel);
         assertSame(responseCode, UserManager.ResponseCode.OK);
         assertTrue(userModel.getUserName().equals(userName));
         assertTrue(userModel.getUserEmail().equals(userEmail));
     }
 
     @Test
-    public void getUserByNameError(){
+    public void getUserByNameError() {
         UserModel userModel = new UserModel();
         final UserManager.ResponseCode responseCode = userManager.getUserByName(faker.internet().emailAddress(),
-                                                                               userModel);
+                userModel);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 }
