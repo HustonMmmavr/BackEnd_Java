@@ -1,5 +1,7 @@
 package lastunion.application.managers;
 
+
+
 import lastunion.application.dao.UserDAO;
 import lastunion.application.models.SignInModel;
 import lastunion.application.models.SignUpModel;
@@ -14,6 +16,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +25,7 @@ import javax.validation.constraints.NotNull;
 public class UserManager {
     @NotNull
     private final UserDAO userDAO;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserManager.class);
 
     public enum ResponseCode {
         @SuppressWarnings("EnumeratedConstantNamingConvention") OK,
@@ -91,9 +96,11 @@ public class UserManager {
         // trying to save user
         try {
             userDAO.saveUser(newUser);
+            LOGGER.info("User registered with name " + newUser.getUserName());
         } catch (DuplicateKeyException dupEx) {
             return ResponseCode.LOGIN_IS_BUSY;
         } catch (DataAccessException daEx) {
+            LOGGER.info(daEx.getMessage());
             return ResponseCode.DATABASE_ERROR;
         }
 
@@ -110,7 +117,8 @@ public class UserManager {
             userDAO.modifyUser(user, modifiedUser);
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException daEx) {
+            LOGGER.info(daEx.getMessage());
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -138,7 +146,8 @@ public class UserManager {
             userDAO.modifyUser(user, modifiedUser);
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException daEx) {
+            LOGGER.info(daEx.getMessage());
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -153,7 +162,8 @@ public class UserManager {
             user.setUserHighScore(tempUser.getUserHighScore());
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException daEx) {
+            LOGGER.info(daEx.getMessage());
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -165,7 +175,8 @@ public class UserManager {
             userDAO.deleteUserByName(userName);
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException daEx) {
+            LOGGER.info(daEx.getMessage());
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -185,7 +196,8 @@ public class UserManager {
             return ResponseCode.INCORRECT_LOGIN;
         }
         // error db
-        catch (DataAccessException ex) {
+        catch (DataAccessException daEx) {
+            LOGGER.info(daEx.getMessage());
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;

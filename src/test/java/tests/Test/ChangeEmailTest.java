@@ -117,7 +117,7 @@ public class ChangeEmailTest {
                         .contentType("application/json")
                         .content(requestBuilder.getJsonRequest(userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.result", is(false)))
                 .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
     }
