@@ -65,7 +65,7 @@ public class UserManagerTest_IT {
     @Test
     public void checkPasswordByUserNameWithIncorrectPassword() {
         final boolean result = userManager.checkPasswordByUserName(faker.internet().password(), userName);
-        assertSame(result, true);
+        assertSame(result, false);
     }
 
     @Test
