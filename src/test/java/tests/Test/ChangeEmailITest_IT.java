@@ -81,7 +81,7 @@ public class ChangeEmailITest_IT {
                         .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
     }
 
@@ -94,7 +94,7 @@ public class ChangeEmailITest_IT {
                         .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.result", is(false)))
                 .andExpect(jsonPath("$.responseMessage", is("Form not valid! en")));
     }
 
