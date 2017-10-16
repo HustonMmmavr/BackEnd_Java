@@ -12,7 +12,7 @@ paths:
   /api/user/signin:
     post:
       tags:
-      - uesr
+      - user
       summary: Sign in user into the server
       description: Sign in user into the server
       operationId: signInUser
@@ -319,4 +319,6 @@ schemes:
  - https
  - http
 # Added by API Auto Mocking Plugin
-basePath: /HustonMmmavr/new/1.0.0
+# basePath: /HustonMmmavr/new/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /HustonMmmavr/server_api/1.0.0
