@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-//@CrossOrigin(origins = "https://front-lastunion.herokuapp.com/")
+@CrossOrigin(origins = "https://front-lastunion.herokuapp.com/")
 @RestController
 public class SignUpController {
     @NotNull
@@ -53,7 +53,7 @@ public class SignUpController {
                 httpSession.setAttribute("userLogin", signUpView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                     messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
-                    HttpStatus.OK);
+                    HttpStatus.CREATED);
 
             case LOGIN_IS_TAKEN:
                 return new ResponseEntity<>(new ResponseCode(false,
