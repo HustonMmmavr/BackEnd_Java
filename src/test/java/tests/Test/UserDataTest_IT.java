@@ -77,7 +77,7 @@ public class UserDataTest_IT {
                 .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
     }
-
+    
     @Test
     public void invalidSession() throws Exception {
         mock.perform(
