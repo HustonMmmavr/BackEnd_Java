@@ -58,7 +58,7 @@ public class UserManagerTest_IT {
     @Test
     public void checkPasswordByUserNameOk() {
         final boolean result = userManager.checkPasswordByUserName(userPassword, userName);
-        assertSame(result, false);
+        assertSame(result, true);
     }
 
     @SuppressWarnings("InstanceMethodNamingConvention")
