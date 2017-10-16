@@ -1,7 +1,6 @@
 package lastunion.application.managers;
 
 
-import com.sun.org.apache.regexp.internal.RE;
 import lastunion.application.dao.UserDAO;
 import lastunion.application.models.SignInModel;
 import lastunion.application.models.SignUpModel;
@@ -187,8 +186,7 @@ public class UserManager {
             final UserModel modifiedUser = new UserModel(user);
             modifiedUser.setUserHighScore(score);
             userDAO.modifyUser(user, modifiedUser);
-        }
-        catch (EmptyResultDataAccessException ex) {
+        } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
             LOGGER.info(daEx.getMessage());
