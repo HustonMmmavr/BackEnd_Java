@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@CrossOrigin(origins = "https://front-lastunion.herokuapp.com/")
+@CrossOrigin(origins = "https://front-lastunion.herokuapp.com")
 @RestController
 public class SignInController {
     @NotNull
@@ -57,7 +57,7 @@ public class SignInController {
                         HttpStatus.FORBIDDEN);
 
             case OK:
-                httpSession.setAttribute("userLogin", signInView.getUserName());
+                httpSession.setAttribute("userName", signInView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                         HttpStatus.OK);

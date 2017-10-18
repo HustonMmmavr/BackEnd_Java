@@ -1,4 +1,4 @@
-package tests.UnitTest;
+package tests.unit;
 
 import com.github.javafaker.Faker;
 import lastunion.application.Application;
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertSame;
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 @Category(tests.IntegrationTest.class)
-public class UserManagerTest_IT {
+public class UserManagerIntTest {
     @Autowired
     private UserManager userManager;
     private static Faker faker;

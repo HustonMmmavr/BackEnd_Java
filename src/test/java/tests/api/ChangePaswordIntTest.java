@@ -1,4 +1,4 @@
-package tests.Test;
+package tests.api;
 
 import com.github.javafaker.Faker;
 import lastunion.application.Application;
@@ -14,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.validation.constraints.NotNull;
-
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Category(tests.IntegrationTest.class)
 //
 
-public class ChangeEmailITest_IT {
+public class ChangePaswordIntTest {
     @Autowired
     private MockMvc mock;
     private static Faker faker;
@@ -38,19 +36,20 @@ public class ChangeEmailITest_IT {
     private static String userPassword;
 
 
+
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
-    static public void init() {
+    static public void init(){
         faker = new Faker();
         requestBuilder = new TestRequestBuilder();
-        requestBuilder.init("newEmail");
+        requestBuilder.init("oldPassword", "newPassword");
     }
 
-    public void createUser(@NotNull String uName, @NotNull String uPassword, @NotNull String uEmail) throws Exception {
+    public void createUser() throws Exception {
         this.mock.perform(
                 post("/api/user/signup")
                         .contentType("application/json")
-                        .content(TestRequestBuilder.getJsonRequestForSignUp(uName, uPassword, uEmail)))
+                        .content(TestRequestBuilder.getJsonRequestForSignUp(userName, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
@@ -59,25 +58,26 @@ public class ChangeEmailITest_IT {
 
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp() {
+    public void setUp(){
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
-        pathUrl = "/api/user/change_email";
+        pathUrl = "/api/user/change_password";
 
         try {
-            createUser(userName, userPassword, userEmail);
-        } catch (Exception ex) {
+            createUser();
+        }
+        catch (Exception ex) {
             throw new RuntimeException();
         }
     }
 
     @Test
-    public void changeEmailNormal() throws Exception {
+    public void changePasswordNormal() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(faker.internet().emailAddress()))
+                        .content(requestBuilder.getJsonRequest(userPassword, faker.internet().password()))
                         .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
@@ -85,44 +85,27 @@ public class ChangeEmailITest_IT {
                 .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
     }
 
+    @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
-    public void changeEmailIncorrectEmail() throws Exception {
+    public void changePasswordIncorrectOldPassword() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest("aaa"))
+                        .content(requestBuilder.getJsonRequest("aaa", faker.internet().password()))
                         .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Form not valid! en")));
-    }
-
-    @Test
-    public void changeEmailThatTaken() throws Exception {
-        final String otherUserName = faker.name().username();
-        final String otherUserPassword = faker.internet().password();
-        final String otherUseEmail = faker.internet().emailAddress();
-        createUser(otherUserName,otherUserPassword,otherUseEmail);
-
-        this.mock.perform(
-                post(pathUrl)
-                        .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userEmail))
-                        .sessionAttr("userName", otherUserName))
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Email already registered! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data! en")));
     }
 
 
     @Test
-    public void changeEmailNullUserNewEmail() throws Exception {
+    public void changePasswordNullOldPassword() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest((String) null))
+                        .content(requestBuilder.getJsonRequest(null, faker.internet().password()))
                         .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
@@ -131,11 +114,37 @@ public class ChangeEmailITest_IT {
     }
 
     @Test
-    public void changeEmailNullSession() throws Exception {
+    public void changePasswordNullNewPassword() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userEmail)))
+                        .content(requestBuilder.getJsonRequest(userPassword, null))
+                        .sessionAttr("userName", userName))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+    }
+
+    @Test
+    public void changePasswordNullBothPasswords() throws Exception{
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(null, null))
+                        .sessionAttr("userName", userName))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+    }
+
+    @Test
+    public void changePasswordNullSession() throws Exception{
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(userPassword, faker.internet().password())))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -143,11 +152,11 @@ public class ChangeEmailITest_IT {
     }
 
     @Test
-    public void changeEmailInvalidSession() throws Exception {
+    public void changePasswordInvalidSession() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userEmail))
+                        .content(requestBuilder.getJsonRequest(userPassword, faker.internet().password()))
                         .sessionAttr("userName", faker.name().username()))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
@@ -155,8 +164,9 @@ public class ChangeEmailITest_IT {
                 .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
     }
 
+    @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
-    public void changeEmailIncorrectDocumentType() throws Exception {
+    public void changePasswordIncorrectDocumentType() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("text/html"))

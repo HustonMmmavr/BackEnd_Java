@@ -1,4 +1,4 @@
-package tests.Test;
+package tests.api;
 
 
 import net.minidev.json.JSONObject;
