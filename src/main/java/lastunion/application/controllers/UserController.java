@@ -253,12 +253,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ResponseCode> setScore(Locale locale, @PathVariable(value = "score") String score,
                                           HttpSession httpSession) {
-//        if (score == null) {
-//            return new ResponseEntity<>(new ResponseCode<>(false,
-//                    messageSource.getMessage("msgs.bad_request_score", null, locale), null),
-//                    HttpStatus.BAD_REQUEST);
-//        }
-
+        
         int userScore = 0;
         try {
             Integer intScore = new Integer(score);
