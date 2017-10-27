@@ -230,6 +230,7 @@ public class UserController {
         final UserModel userModel = new UserModel();
         final UserManager.ResponseCode responseCode = userManager.getUserByName(userName, userModel);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
             case INCORRECT_LOGIN:
                 return new ResponseEntity<>(new ResponseCode<>(false,
@@ -251,14 +252,13 @@ public class UserController {
 
     @RequestMapping(path = "/api/user/set_score/{score}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ResponseCode> setScore(Locale locale, @PathVariable(value = "score") String score,
+    public ResponseEntity<ResponseCode> setScore(Locale locale, @PathVariable(value = "score") String score,
                                           HttpSession httpSession) {
-        
-        int userScore = 0;
+
+        final int userScore;
         try {
-            Integer intScore = new Integer(score);
-            userScore = intScore;
-        } catch (Exception e) {
+            userScore = new Integer(score);
+        } catch (NumberFormatException e) {
             return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.bad_request_score", null, locale), null),
                     HttpStatus.BAD_REQUEST);
@@ -271,9 +271,9 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
-        final UserModel userModel = new UserModel();
         final UserManager.ResponseCode responseCode = userManager.changeUserHighScore(userName, userScore);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
             case INCORRECT_LOGIN:
                 return new ResponseEntity<>(new ResponseCode<>(false,
