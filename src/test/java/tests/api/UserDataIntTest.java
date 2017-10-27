@@ -85,7 +85,7 @@ public class UserDataIntTest {
                 .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data!")));
     }
 
-    @Test
+    @Before
     public void setUserScoreNormal() throws Exception {
         mock.perform(
                 get("/api/user/set_score/" + userScore.toString())
@@ -118,18 +118,7 @@ public class UserDataIntTest {
     }
 
     @Test
-    public void setUserNoScore() throws Exception {
-        mock.perform(
-                get("/api/user/set_score/")
-                        .sessionAttr("userName", userName))
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Score didn't set or is not an integer!")));
-    }
-
-    @Test
-    public void setUserScoreNotInteg() throws Exception {
+    public void setUserScoreNotInteger() throws Exception {
         mock.perform(
                 get("/api/user/set_score/hi")
                         .sessionAttr("userName", userName))
@@ -142,13 +131,13 @@ public class UserDataIntTest {
     @Test
     public void getScoreUser() throws Exception {
         mock.perform(
-                get("/api/user/get_score/")
+                get("/api/user/get_score")
                         .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("Ok!")))
-                .andExpect(jsonPath("$data", is(userScore)));
+                .andExpect(jsonPath("$.data", is(userScore)));
     }
 
     @Test
