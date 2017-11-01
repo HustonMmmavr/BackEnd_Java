@@ -141,7 +141,11 @@
 					<includes>
 						<include>**/*IntTest.java</include>
 					</includes>
+<<<<<<< Updated upstream
 				</configuration>
+=======
+                </configuration>
+>>>>>>> Stashed changes
 				<executions>
 					<execution>
 						<phase>integration-test</phase>
