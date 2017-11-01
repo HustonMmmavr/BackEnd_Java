@@ -11,4 +11,4 @@ cache:
 deploy: 
   provider: heroku 
   api_key: 12345 
-#  app: lastunionapp
+  app: lastunionapp
