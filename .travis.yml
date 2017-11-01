@@ -13,3 +13,4 @@ deploy:
   api_key: 
     secure: 02da7fcd-3587-410a-a4c5-f0f20236861e
   app: lastunionapp
+  run: mvn
